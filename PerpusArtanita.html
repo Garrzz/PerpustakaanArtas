@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" href="logo.png" />
+    <title>Peminjaman buku</title>
+
+    <style>
+      :root {
+        --bg: #0f172a; /* slate-900 */
+        --panel: #111827; /* gray-900 */
+        --card: #1f2937; /* gray-800 */
+        --muted: #64748b; /* slate-500 */
+        --text: #e5e7eb; /* gray-200 */
+        --accent: #22c55e; /* green-500 */
+        --accent-2: #60a5fa; /* blue-400 */
+        --danger: #ef4444; /* red-500 */
+        --warn: #f59e0b; /* amber-500 */
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        --radius: 16px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+
+      img {
+        width: 40px;
+        height: 40px;
+        top: 100px;
+      }
+
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        background: linear-gradient(135deg, var(--bg), #020617);
+        color: var(--text);
+      }
+      .container {
+        max-width: 1100px;
+        margin: 36px auto;
+        padding: 0 16px;
+      }
+      header {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+      .title {
+        font-size: clamp(22px, 3.6vw, 34px);
+        font-weight: 800;
+        letter-spacing: 0.3px;
+      }
+      .subtitle {
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      @media (min-width: 980px) {
+        .grid {
+          grid-template-columns: 420px 1fr;
+        }
+      }
+      .card {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: var(--radius);
+        padding: 18px;
+        box-shadow: var(--shadow);
+      }
+      .card h2 {
+        margin: 0.2rem 0 1rem;
+        font-size: 18px;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .row-3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 12px;
+      }
+      label {
+        font-size: 13px;
+        color: var(--muted);
+        display: block;
+        margin: 6px 0;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 12px 12px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: #0b1324;
+        color: var(--text);
+        outline: none;
+      }
+      input:focus,
+      select:focus {
+        border-color: var(--accent-2);
+      }
+      .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+      button {
+        border: 0;
+        padding: 10px 14px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: #052e16;
+      }
+      .btn-secondary {
+        background: #0b1324;
+        color: var(--text);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .btn-danger {
+        background: var(--danger);
+        color: #210000;
+      }
+      .btn-warn {
+        background: var(--warn);
+        color: #1f1300;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 12px 10px;
+        text-align: left;
+        border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+      }
+      th {
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 700;
+        letter-spacing: 0.2px;
+        text-transform: uppercase;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+      .badge.ok {
+        background: rgba(34, 197, 94, 0.12);
+        border-color: rgba(34, 197, 94, 0.4);
+        color: #b7f7c8;
+      }
+      .badge.late {
+        background: rgba(239, 68, 68, 0.12);
+        border-color: rgba(239, 68, 68, 0.4);
+        color: #fecaca;
+      }
+      .pill {
+        font-weight: 700;
+      }
+      .toolbar {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: flex-end;
+      }
+      .footer {
+        margin-top: 14px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }
+      .small {
+        font-size: 12px;
+      }
+      .right {
+        text-align: right;
+      }
+      .nowrap {
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div>
+          <div class="title"><img src="logo.png" alt="Logo" />Sistem Peminjaman Buku Perpustakaan</div>
+          <div class="subtitle">Tanpa login & database — data disimpan di peramban (LocalStorage)</div>
+        </div>
+        <div class="toolbar">
+          <button id="btnReset" class="btn-danger">Reset Semua Data</button>
+        </div>
+      </header>
+
+      <div class="grid">
+        <!-- FORM INPUT -->
+        <section class="card">
+          <h2>Tambah Peminjaman</h2>
+          <form id="loanForm">
+            <label
+              >Nama Peminjam
+              <input required type="text" id="borrower" placeholder="cth: Andi Saputra" />
+            </label>
+
+            <div class="row">
+              <label
+                >Kelas
+                <select id="kelas" required>
+                  <option value="">— pilih kelas —</option>
+                  <option>X AKL</option>
+                  <option>X OTKP</option>
+                  <option>X RPL</option>
+                  <option>X BDP</option>
+                  <option>XI AKL</option>
+                  <option>XI OTKP</option>
+                  <option>XI RPL</option>
+                  <option>XI BDP</option>
+                  <option>XII AKL</option>
+                  <option>XII OTKP</option>
+                  <option>XII RPL</option>
+                  <option>XII BDP</option>
+                </select>
+              </label>
+              <label
+                >Pelajaran / Guru
+                <input required type="text" id="subject" placeholder="cth: Matematika - Bu Sari" />
+              </label>
+            </div>
+
+            <div class="row-3">
+              <label
+                >Jumlah Buku
+                <input required type="number" id="qty" min="1" value="1" />
+              </label>
+              <label
+                >Tgl Pinjam
+                <input required type="date" id="borrowDate" />
+              </label>
+              <label
+                >Jatuh Tempo (Due)
+                <input required type="date" id="dueDate" />
+              </label>
+            </div>
+
+            <div class="actions">
+              <button class="btn-primary" type="submit">Simpan</button>
+              <button class="btn-secondary" type="button" id="btnToday">Auto: Hari Ini + 7</button>
+            </div>
+
+            <div class="footer small muted">
+              <div>
+                Denda keterlambatan: <span class="pill">Rp <span id="feePerDay">500</span> / hari</span>
+              </div>
+              <div>
+                <label class="small"
+                  >Atur denda /hari
+                  <input type="number" id="feeInput" min="0" value="500" style="width: 120px; margin-left: 8px" />
+                </label>
+              </div>
+            </div>
+          </form>
+        </section>
+
+        <!-- DAFTAR PEMINJAMAN AKTIF -->
+        <section class="card">
+          <h2>Daftar Peminjaman Aktif</h2>
+          <div class="subtitle" style="margin-bottom: 8px">Klik "Kembalikan" untuk mengakhiri peminjaman dan hitung denda otomatis.</div>
+          <div class="table-wrap">
+            <table id="activeTable">
+              <thead>
+                <tr>
+                  <th>Nama</th>
+                  <th>Kelas</th>
+                  <th>Pelajaran/Guru</th>
+                  <th class="right">Jml</th>
+                  <th>Pinjam</th>
+                  <th>Due</th>
+                  <th>Status</th>
+                  <th class="right">Aksi</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- RIWAYAT PENGEMBALIAN -->
+      <section class="card" style="margin-top: 16px">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px">
+          <h2>Riwayat Pengembalian</h2>
+          <div class="actions">
+            <button id="btnClearHistory" class="btn-warn">Hapus Riwayat</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table id="historyTable">
+            <thead>
+              <tr>
+                <th>Nama</th>
+                <th>Kelas</th>
+                <th>Pelajaran/Guru</th>
+                <th class="right">Jml</th>
+                <th>Pinjam</th>
+                <th>Due</th>
+                <th>Kembali</th>
+                <th class="right nowrap">Telat (hari)</th>
+                <th class="right nowrap">Denda</th>
+                <th class="right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <p class="small muted" style="margin-top: 12px">Tip: Anda bisa mencetak halaman ini (Ctrl/Cmd + P) untuk laporan cepat.</p>
+    </div>
+
+    <script>
+      // === UTIL ===
+      const $ = (sel, parent = document) => parent.querySelector(sel);
+      const $$ = (sel, parent = document) => Array.from(parent.querySelectorAll(sel));
+      const fmtDate = (d) => new Date(d).toLocaleDateString("id-ID");
+      const todayStr = () => new Date().toISOString().slice(0, 10);
+      const toIDR = (n) => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(n || 0);
+
+      // === STORAGE KEYS ===
+      const KEY_ACTIVE = "lib_loans_v1";
+      const KEY_HISTORY = "lib_history_v1";
+      const KEY_FEE = "lib_fee_per_day_v1";
+
+      const load = (k, def) => {
+        try {
+          return JSON.parse(localStorage.getItem(k)) ?? def;
+        } catch {
+          return def;
+        }
+      };
+      const save = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+
+      // === STATE ===
+      let loans = load(KEY_ACTIVE, []);
+      let history = load(KEY_HISTORY, []);
+      let feePerDay = load(KEY_FEE, 500);
+
+      // === ELEMENTS ===
+      const form = $("#loanForm");
+      const borrower = $("#borrower");
+      const kelas = $("#kelas");
+      const subject = $("#subject");
+      const qty = $("#qty");
+      const borrowDate = $("#borrowDate");
+      const dueDate = $("#dueDate");
+      const feeInput = $("#feeInput");
+      const feePerDaySpan = $("#feePerDay");
+
+      const activeTBody = $("#activeTable tbody");
+      const historyTBody = $("#historyTable tbody");
+
+      // === INIT ===
+      function initDates() {
+        if (!borrowDate.value) borrowDate.value = todayStr();
+        if (!dueDate.value) {
+          const t = new Date();
+          t.setDate(t.getDate() + 7);
+          dueDate.value = t.toISOString().slice(0, 10);
+        }
+      }
+      initDates();
+
+      feeInput.value = feePerDay;
+      feePerDaySpan.textContent = feePerDay;
+
+      // === RENDER ===
+      function render() {
+        // Active loans
+        activeTBody.innerHTML =
+          loans
+            .map((l) => {
+              const due = new Date(l.dueDate);
+              const now = new Date();
+              const lateDays = Math.max(0, Math.ceil((now - due) / (1000 * 60 * 60 * 24)));
+              const status = lateDays > 0 ? <span class="badge late">Terlambat ${lateDays}h</span> : <span class="badge ok">Aman</span>;
+              return `<tr>
+          <td>${l.borrower}</td>
+          <td>${l.kelas}</td>
+          <td>${l.subject}</td>
+          <td class="right">${l.qty}</td>
+          <td>${fmtDate(l.borrowDate)}</td>
+          <td>${fmtDate(l.dueDate)}</td>
+          <td>${status}</td>
+          <td class="right">
+            <button class="btn-primary" onclick="returnLoan('${l.id}')">Kembalikan</button>
+            <button class="btn-secondary" onclick="editLoan('${l.id}')">Edit</button>
+            <button class="btn-danger" onclick="deleteLoan('${l.id}')">Hapus</button>
+          </td>
+        </tr>`;
+            })
+            .join("") || <tr><td colspan="8" class="muted">Belum ada peminjaman aktif.</td></tr>;
+
+        // History
+        historyTBody.innerHTML =
+          history
+            .map((h) => {
+              return `<tr>
+          <td>${h.borrower}</td>
+          <td>${h.kelas}</td>
+          <td>${h.subject}</td>
+          <td class="right">${h.qty}</td>
+          <td>${fmtDate(h.borrowDate)}</td>
+          <td>${fmtDate(h.dueDate)}</td>
+          <td>${fmtDate(h.returnDate)}</td>
+          <td class="right">${h.lateDays}</td>
+          <td class="right">${toIDR(h.fee)}</td>
+          <td class="right"><button class="btn-secondary" onclick="deleteHistory('${h.id}')">Hapus</button></td>
+        </tr>`;
+            })
+            .join("") || <tr><td colspan="10" class="muted">Belum ada riwayat.</td></tr>;
+
+        save(KEY_ACTIVE, loans);
+        save(KEY_HISTORY, history);
+        save(KEY_FEE, feePerDay);
+        feePerDaySpan.textContent = feePerDay;
+      }
+
+      render();
+
+      // === HANDLERS ===
+      $("#btnToday").addEventListener("click", () => {
+        const t = new Date();
+        borrowDate.value = t.toISOString().slice(0, 10);
+        t.setDate(t.getDate() + 7);
+        dueDate.value = t.toISOString().slice(0, 10);
+      });
+
+      feeInput.addEventListener("input", () => {
+        const v = Math.max(0, parseInt(feeInput.value || "0", 10));
+        feePerDay = v;
+        render();
+      });
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const newLoan = {
+          id: crypto.randomUUID(),
+          borrower: borrower.value.trim(),
+          kelas: kelas.value,
+          subject: subject.value.trim(),
+          qty: Math.max(1, parseInt(qty.value, 10)),
+          borrowDate: borrowDate.value,
+          dueDate: dueDate.value,
+        };
+        if (!newLoan.borrower || !newLoan.kelas || !newLoan.subject || !newLoan.borrowDate || !newLoan.dueDate) {
+          alert("Mohon lengkapi semua data.");
+          return;
+        }
+        loans.unshift(newLoan);
+        form.reset();
+        initDates();
+        render();
+      });
+
+      window.deleteLoan = (id) => {
+        if (!confirm("Hapus peminjaman ini?")) return;
+        loans = loans.filter((l) => l.id !== id);
+        render();
+      };
+
+      window.editLoan = (id) => {
+        const l = loans.find((x) => x.id === id);
+        if (!l) return;
+        // Isi form dengan data untuk edit cepat
+        borrower.value = l.borrower;
+        kelas.value = l.kelas;
+        subject.value = l.subject;
+        qty.value = l.qty;
+        borrowDate.value = l.borrowDate;
+        dueDate.value = l.dueDate;
+        // Hapus record lama supaya submit menjadi update
+        loans = loans.filter((x) => x.id !== id);
+        render();
+        borrower.focus();
+      };
+
+      window.returnLoan = (id) => {
+        const l = loans.find((x) => x.id === id);
+        if (!l) return;
+        const defaultReturn = todayStr();
+        const ret = prompt("Tanggal pengembalian (YYYY-MM-DD):", defaultReturn);
+        if (!ret) return;
+        const returnDate = new Date(ret);
+        if (Number.isNaN(+returnDate)) {
+          alert("Tanggal tidak valid.");
+          return;
+        }
+        const due = new Date(l.dueDate);
+        const lateDays = Math.max(0, Math.ceil((returnDate - due) / (1000 * 60 * 60 * 24)));
+        const fee = lateDays * feePerDay;
+        history.unshift({
+          id: crypto.randomUUID(),
+          ...l,
+          returnDate: ret,
+          lateDays,
+          fee,
+        });
+        loans = loans.filter((x) => x.id !== id);
+        render();
+        alert(lateDays > 0 ? Telat ${lateDays} hari. Denda: ${toIDR(fee)} : "Tepat waktu. Tidak ada denda.");
+      };
+
+      window.deleteHistory = (id) => {
+        if (!confirm("Hapus item riwayat ini?")) return;
+        history = history.filter((h) => h.id !== id);
+        render();
+      };
+
+      $("#btnClearHistory").addEventListener("click", () => {
+        if (!history.length) return alert("Riwayat kosong.");
+        if (confirm("Hapus semua riwayat pengembalian?")) {
+          history = [];
+          render();
+        }
+      });
+
+      $("#btnReset").addEventListener("click", () => {
+        if (confirm("Ini akan menghapus SEMUA data (aktif + riwayat). Lanjutkan?")) {
+          loans = [];
+          history = [];
+          localStorage.removeItem(KEY_ACTIVE);
+          localStorage.removeItem(KEY_HISTORY);
+          render();
+        }
+      });
+
+      // Export CSV gabungan (aktif + riwayat)
+      $("#btnExportCSV").addEventListener("click", () => {
+        const rows = [["Tipe", "Nama", "Kelas", "Pelajaran/Guru", "Jumlah", "Tgl Pinjam", "Jatuh Tempo", "Tgl Kembali", "Telat (hari)", "Denda"]];
+        loans.forEach((l) => rows.push(["Aktif", l.borrower, l.kelas, l.subject, l.qty, l.borrowDate, l.dueDate, "", "", ""]));
+        history.forEach((h) => rows.push(["Selesai", h.borrower, h.kelas, h.subject, h.qty, h.borrowDate, h.dueDate, h.returnDate, h.lateDays, h.fee]));
+        const csv = rows.map((r) => r.map((x) => "${String(x).replaceAll('"', '""')}").join(",")).join("\n");
+        const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = peminjaman_perpustakaan_${new Date().toISOString().slice(0, 10)}.csv;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      });
+    </script>
+  </body>
+</html>
